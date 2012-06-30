@@ -1,0 +1,31 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+
+return array
+(
+	'default' => array
+	(
+		'type'       => 'mysql',
+		'connection' => array(
+			/**
+			 * The following options are available for MySQL:
+			 *
+			 * string   hostname     server hostname, or socket
+			 * string   database     database name
+			 * string   username     database username
+			 * string   password     database password
+			 * boolean  persistent   use persistent connections?
+			 *
+			 * Ports and sockets may be appended to the hostname.
+			 */
+			'hostname'   => '127.0.0.1',
+			'database'   => 'dbupdate_test',
+			'username'   => 'dbupdate_test',
+			'password'   => 'dbupdate_test',
+			'persistent' => FALSE,
+		),
+		'table_prefix' => '',
+		'charset'      => 'utf8',
+		'caching'      => FALSE,
+		'profiling'    => TRUE,
+	),
+);

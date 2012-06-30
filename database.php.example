@@ -1,0 +1,36 @@
+<?php defined('SYSPATH') or die('No direct access allowed.');
+
+/*
+ * Select database configuration based on the envirnoment 
+ */
+
+switch(Kohana::$environment)
+{
+	case Kohana::PRODUCTION:
+		$database_config = 'database_production';
+	break;
+
+	case Kohana::DEVELOPMENT:
+		$database_config = 'database_development';
+	break;
+
+	case Kohana::TESTING:
+		$database_config = 'database_testcases';
+	break;
+
+	default:
+		$database_config = 'this_does_not_exists';
+		
+}
+
+$file = Kohana::find_file('config', $database_config);
+
+if(count($file))
+{
+	// Load database configuration for Kohana::$environment
+	return require_once $file[0];
+}
+else
+{
+	throw new Exception('No database configuration for environment '.Kohana::$environment);
+}
