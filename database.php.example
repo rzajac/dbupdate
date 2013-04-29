@@ -1,9 +1,19 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-
-/*
- * Select database configuration based on the envirnoment 
+/*!
+ * DBUpdate
+ *
+ * This file is part of very simple Kohana 3.x module
+ * to keep your database schema in sync across servers
+ *
+ * Copyright 2007-2013 Rafal Zajac rzajac<at>gmail<dot>com. All rights reserved.
+ * http://github.com/rzajac/dbupdate
+ *
+ * Licensed under the MIT license
  */
 
+/*
+ * Select database configuration based on the envirnoment
+ */
 switch(Kohana::$environment)
 {
 	case Kohana::PRODUCTION:
@@ -20,7 +30,7 @@ switch(Kohana::$environment)
 
 	default:
 		$database_config = 'this_does_not_exists';
-		
+
 }
 
 $file = Kohana::find_file('config', $database_config);

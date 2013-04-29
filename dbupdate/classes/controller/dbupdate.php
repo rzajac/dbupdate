@@ -1,47 +1,59 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
+/*!
+ * DBUpdate
+ *
+ * This file is part of very simple Kohana 3.x module
+ * to keep your database schema in sync across servers
+ *
+ * Copyright 2007-2013 Rafal Zajac rzajac<at>gmail<dot>com. All rights reserved.
+ * http://github.com/rzajac/dbupdate
+ *
+ * Licensed under the MIT license
+ */
+
 /**
  * The database schema versioning tool.
  *
  * @package    DBUpdate
  * @category   Database
- * @author     Rafal Zajac
+ * @author     Rafal Zajac rzajac<at>gmail<dot>com
  * @copyright  (c) 2007-2012 Rafal Zajac
  */
 class Controller_Dbupdate extends Kohana_Controller
 {
 	/**
 	 * Database name
-	 * 
+	 *
 	 * The database we will be updating
-	 * 
+	 *
 	 * @var string
 	 */
 	private $db_name;
-	
+
 	/**
 	 * Current database version
-	 * 
+	 *
 	 * @var int
 	 */
 	private $current_version = 0;
-	
+
 	/**
 	 * Latest migration version
-	 * 
+	 *
 	 * @var int
 	 */
 	private $latest_version = 0;
-	
+
 	/**
 	 * All migration version numbers and paths to migration scripts
-	 * 
+	 *
 	 * @var array
 	 */
 	private $all_versions = array();
-	
+
 	/**
 	 * Migration versions that are already applied
-	 * 
+	 *
 	 * @var array
 	 */
 	private $applied_versions;
@@ -50,15 +62,15 @@ class Controller_Dbupdate extends Kohana_Controller
 	{
 		if( ! Kohana::$is_cli)
 		{
-			throw new Kohana_HTTP_Exception_404();	
+			throw new Kohana_HTTP_Exception_404();
 		}
-		
+
 		parent::before();
 	}
 
 	/**
 	 * Default controller action
-	 * 
+	 *
 	 * return NULL
 	 */
 	public function action_index()
@@ -69,7 +81,7 @@ class Controller_Dbupdate extends Kohana_Controller
 
 	/**
 	 * Setup DBUpdate class
-	 * 
+	 *
 	 * @return NULL
 	 */
 	public function setup()
@@ -82,7 +94,7 @@ class Controller_Dbupdate extends Kohana_Controller
 
 	/**
 	 * Update selected database
-	 * 
+	 *
 	 * @throws Exception On unknown database configuration
 	 */
 	public function action_update()
@@ -150,7 +162,7 @@ Choose option ==> ', FALSE);
 						$class = 'C'.$version;
 						$c = new $class();
 						self::display('Version '.$version.': '.$c->desc."\n");
-						
+
 						foreach($c->sqls as $sql)
 						{
 							self::display(trim($sql));
@@ -165,20 +177,20 @@ Choose option ==> ', FALSE);
 					$resp = Request::factory('/dbupdate/skel')->execute();
 					self::display($resp.'');
 				break;
-				
+
 				case 'm':
 					$this->mark_applied();
 				break;
-				
+
 				case 'r':
 					self::display("\nApply migration (ENTER to exit) ==> ", FALSE);
-					
+
 					$input = trim(fgets(STDIN));
-					
+
 					if($input !== '')
 					{
 						$versions = $this->get_versions();
-						
+
 						if(array_key_exists($input, $versions))
 						{
 							$this->apply_migrations(array($input => $versions[$input]));
@@ -194,8 +206,8 @@ Choose option ==> ', FALSE);
 	}
 
 	/**
-	 * Create skeletn migration file
-	 * 
+	 * Create skeleton migration file
+	 *
 	 * @return NULL
 	 */
 	public function action_skel()
@@ -249,7 +261,7 @@ EOF;
 
 	/**
 	 * Generate new migration file name
-	 * 
+	 *
 	 * @return array
 	 */
 	private function get_new_file()
@@ -289,7 +301,7 @@ EOF;
 
 	/**
 	 * Get latest migration version
-	 * 
+	 *
 	 * @return int
 	 */
 	private function get_latest_verison()
@@ -300,9 +312,9 @@ EOF;
 
 	/**
 	 * Get current DB version
-	 * 
+	 *
 	 * Gets the migration version that database is currently in.
-	 * 
+	 *
 	 * @return int
 	 */
 	private function get_current_version()
@@ -314,7 +326,7 @@ EOF;
 
 	/**
 	 * Get already applied versions for selected database
-	 * 
+	 *
 	 * @return array
 	 */
 	private function get_applied_versions()
@@ -333,7 +345,7 @@ EOF;
 
 	/**
 	 * Get not applied version numbers
-	 * 
+	 *
 	 * @return array
 	 */
 	private function get_not_applied_versions()
@@ -350,7 +362,7 @@ EOF;
 
 	/**
 	 * Apply migrations to selected database
-	 * 
+	 *
 	 * @param array $not_applied
 	 */
 	private function apply_migrations(array $not_applied = array())
@@ -359,7 +371,7 @@ EOF;
 		{
 			$not_applied = $this->get_not_applied_versions();
 		}
-		
+
 		if(count($not_applied) == 0)
 		{
 			self::display("\nAll versions applied.", 'blue');
@@ -377,16 +389,16 @@ EOF;
 			$this->mark_as_applied($version);
 		}
 	}
-	
+
 	/**
 	 * Marks migration version as applied
-	 * 
+	 *
 	 * @return NULL
 	 */
 	private function mark_applied()
 	{
 		$not_applied = $this->get_not_applied_versions();
-		
+
 		if(count($not_applied) == 0)
 		{
 			self::display("\nAll versions applied.", 'blue');
@@ -394,7 +406,7 @@ EOF;
 		}
 
 		self::display("\nNot applied versions:");
-		
+
 		foreach($not_applied as $version => $file)
 		{
 			require_once($file);
@@ -403,11 +415,11 @@ EOF;
 
 			self::display($version.' - '.$c->desc);
 		}
-		
+
 		self::display("\nMark as applied (ENTER to exit) ==> ", FALSE);
-		
+
 		$input = trim(fgets(STDIN));
-		
+
 		if(array_key_exists($input, $not_applied))
 		{
 			$this->mark_as_applied($input);
@@ -420,7 +432,7 @@ EOF;
 
 	/**
 	 * Marks migration version as applied in the selected database
-	 * 
+	 *
 	 * @param int $version
 	 * @return NULL
 	 */
@@ -429,7 +441,7 @@ EOF;
 		$sql = "INSERT dbmigrations SET version = :version";
 		DB::query(Database::INSERT, $sql)->param(':version', $version)->execute();
 	}
-	
+
 	/**
 	 * Display message on CLI
 	 *
@@ -446,35 +458,35 @@ EOF;
 			$fcolor = $newLine_fcolor;
 			$newLine_fcolor = TRUE;
 		}
-	
+
 		$colored_string = "";
-	
+
 		// Check if given foreground color found
 		if (isset(self::$foreground_colors[$fcolor]))
 		{
 			$colored_string .= "\033[" . self::$foreground_colors[$fcolor] . "m";
 		}
-	
+
 		// Check if given background color found
 		if (isset(self::$background_colors[$bcolor]))
 		{
 			$colored_string .= "\033[" . self::$background_colors[$bcolor] . "m";
 		}
-	
+
 		// Add string and end coloring
 		$colored_string .=  $msg . "\033[0m";
-	
+
 		$colored_string = $newLine_fcolor ? $colored_string . "\n" : $colored_string;
-	
+
 		if(Kohana::$is_cli)
 		{
 			echo $colored_string;
 			ob_get_level() && ob_end_flush();
 		}
-	
+
 		return $colored_string;
 	}
-	
+
 	/**
 	 * Available foreground colors
 	 *
@@ -499,7 +511,7 @@ EOF;
 			'light_gray' => '0;37',
 			'white' => '1;37',
 	);
-	
+
 	/**
 	 * Available background colors
 	 *

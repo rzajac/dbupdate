@@ -1,5 +1,19 @@
 <?php defined('SYSPATH') or die('No direct script access.');
+/*!
+ * DBUpdate
+ *
+ * This file is part of very simple Kohana 3.x module
+ * to keep your database schema in sync across servers
+ *
+ * Copyright 2007-2013 Rafal Zajac rzajac<at>gmail<dot>com. All rights reserved.
+ * http://github.com/rzajac/dbupdate
+ *
+ * Licensed under the MIT license
+ */
 
+/*
+ * Development database configuration
+ */
 return array
 (
 	'default' => array
