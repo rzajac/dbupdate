@@ -1,7 +1,9 @@
-Kohana 3.x database schema version control module
+Database schema version control module
 =================================================
 
-This is very simple module to keep your database schema in sync across servers
+This is very simple Kohana 3.x module to keep your database schema in sync across servers.
+
+It's Kohana specific but it would be really easy to port it to some other PHP framework.
 
 Installation
 -------------
